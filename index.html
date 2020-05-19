@@ -1,16 +1,13 @@
 <!DOCTYPE html>
-<html>
-<body>
-<h1>Hello World</h1>
-<p>I'm hosted with GitHub Pages.</p>
+An image will appear here in 3 seconds:
 <script>
-// Check that service workers are supported
-if ('serviceWorker' in navigator) {
-  // Use the window load event to keep the page load performant
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/service-worker.js');
-  });
-}
+  navigator.serviceWorker.register('/sw.js')
+    .then(reg => console.log('SW registered!', reg))
+    .catch(err => console.log('Boo!', err));
+
+  setTimeout(() => {
+    const img = new Image();
+    img.src = '/dog.svg';
+    document.body.appendChild(img);
+  }, 3000);
 </script>
-</body>
-</html>
