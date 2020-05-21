@@ -8,5 +8,14 @@
             <h1>Hello World!</h1>
         </div>
         <script src="scripts.js"></script>
+        <script>
+          if ("serviceWorker" in navigator) {
+              window.addEventListener("load", () => {
+                  navigator.serviceWorker.register("sw.js").then(swReg => { }).catch(err => {
+                      console.error('Service Worker Error', err);
+                  });
+              });
+          }
+      </script>
     </body>
 </html>
