@@ -6,11 +6,12 @@ const PRE_CACHE = ['/index.html', '/styles.css', '/script.js', 'images/icons.png
 
 //On install - as a dependency
 self.addEventListener('install', e => {
-  e.waitUntil(async function() {
-    console.log('[ServiceWorker] Install')
-    const cache = await caches.open(CACHE_NAME);
-    await cache.addAll(PRE_CACHE);
-  }());
+  console.log('[ServiceWorker] Install')
+  e.waitUntil(
+    caches.open(CACHE_NAME).then(cache => {
+      return cache.addAll(PRE_CACHE)
+    })
+  )
 });
 
 //Clean-up & migration.
