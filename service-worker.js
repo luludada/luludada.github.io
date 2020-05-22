@@ -4,14 +4,17 @@ const DATA_CACHE_NAME = 'data-cache-v1'
 const PRE_CACHE = ['/index.html', '/styles.css', '/script.js', 'images/icons.png'];
 
 //On install - as a dependency
-self.addEventListener('install', function(event) {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(function(cache) {
-      console.log('Opened cache');
-      return cache.addAll([PRE_CACHE]);
+self.addEventListener('install', e => {
+  e.waitUntil(
+    caches.open(CACHE_NAME).then(cache => {
+        return cache.addAll(PRE_CACHE);
+    }).then(() => {
+      return self.skipWaiting();
     })
   );
 });
+
+
 
 //Clean-up & migration.
 self.addEventListener('activate', e => {
@@ -20,7 +23,7 @@ self.addEventListener('activate', e => {
       return Promise.all(
         keyList.map(key => {
           if (key !== CACHE_NAME && key !== DATA_CACHE_NAME) {
-            console.log('[ServiceWorker] Removing old cache', key)
+            console.log('[ServiceWorker] Removing old cache', key);
             return caches.delete(key)
           }
         })
