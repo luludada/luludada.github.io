@@ -17,20 +17,20 @@ self.addEventListener('install', e => {
 
 
 //Clean-up & migration.
-// self.addEventListener('activate', e => {
-//   e.waitUntil(
-//     caches.keys().then(keyList => {
-//       return Promise.all(
-//         keyList.map(key => {
-//           if (key !== CACHE_NAME && key !== DATA_CACHE_NAME) {
-//             console.log('[ServiceWorker] Removing old cache', key);
-//             return caches.delete(key)
-//           }
-//         })
-//       )
-//     })
-//   )
-// })
+self.addEventListener('activate', e => {
+  e.waitUntil(
+    caches.keys().then(keyList => {
+      return Promise.all(
+        keyList.map(key => {
+          if (key !== CACHE_NAME && key !== DATA_CACHE_NAME) {
+            console.log('[ServiceWorker] Removing old cache', key);
+            return caches.delete(key)
+          }
+        })
+      )
+    })
+  )
+})
 
 // self.addEventListener('fetch', (event) => {
 //   event.respondWith(async function() {
@@ -69,30 +69,30 @@ self.addEventListener('install', e => {
 
 
 
-// self.addEventListener('fetch', e => {
-//   e.respondWith(
-//     caches.match(e.request).then(response => {
-//       if (response) {
-//         return response
-//       }
+self.addEventListener('fetch', e => {
+  e.respondWith(
+    caches.match(e.request).then(response => {
+      if (response) {
+        return response
+      }
 
-//       const fetchRequest = e.request.clone()
+      const fetchRequest = e.request.clone()
 
-//       return fetch(fetchRequest).then(response => {
-//         // Check if we received a valid response
-//         if (!response || response.status !== 200) {
-//           return response
-//         }
+      return fetch(fetchRequest).then(response => {
+        // Check if we received a valid response
+        if (!response || response.status !== 200) {
+          return response
+        }
 
-//         const responseToCache = response.clone()
+        const responseToCache = response.clone()
 
-//         caches.open(DATA_CACHE_NAME).then(cache => {
-//           cache.put(e.request, responseToCache)
-//         })
+        caches.open(DATA_CACHE_NAME).then(cache => {
+          cache.put(e.request, responseToCache)
+        })
 
-//         return response
-//       })
-//     })
-//   )
-// })
+        return response
+      })
+    })
+  )
+})
 
