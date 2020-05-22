@@ -1,5 +1,5 @@
-var CACHE_NAME = 'cache-v1'
-var DATA_CACHE_NAME = 'data-cache-v1'
+var CACHE_NAME = 'cache-v1';
+var DATA_CACHE_NAME = 'data-cache-v1';
 
 var PRE_CACHE = ['/index.html', '/styles.css', '/script.js', 'images/icons.png'];
 
