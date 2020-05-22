@@ -1,13 +1,14 @@
-var CACHE_NAME = 'cache-v1';
-var DATA_CACHE_NAME = 'data-cache-v1';
+var cacheName = 'cache-v1';
+var data_Cache_Name = 'data-cache-v1';
 
-var PRE_CACHE = ['/index.html', '/styles.css', '/script.js', 'images/icons.png'];
+var preCache = ['/index.html', '/styles.css', '/script.js', 'images/icons.png'];
 
 //On install - as a dependency
 self.addEventListener('install', e => {
   e.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-        return cache.addAll(PRE_CACHE);
+    caches.open('cache-v1').then(cache => {
+        console.log('Opened cache');
+        return cache.addAll(preCache);
     }).then(() => {
       return self.skipWaiting();
     })
@@ -22,7 +23,7 @@ self.addEventListener('activate', e => {
     caches.keys().then(keyList => {
       return Promise.all(
         keyList.map(key => {
-          if (key !== CACHE_NAME && key !== DATA_CACHE_NAME) {
+          if (key !== cacheName && key !== data_Cache_Name) {
             console.log('[ServiceWorker] Removing old cache', key);
             return caches.delete(key)
           }
@@ -31,6 +32,16 @@ self.addEventListener('activate', e => {
     })
   )
 })
+
+
+self.addEventListener('fetch', event => {
+  event.respondWith( 
+    caches.match(event.request)
+     .then(response => {
+       return response || fetch(event.request);
+    })
+  );
+});
 
 // self.addEventListener('fetch', (event) => {
 //   event.respondWith(async function() {
@@ -69,30 +80,30 @@ self.addEventListener('activate', e => {
 
 
 
-self.addEventListener('fetch', e => {
-  e.respondWith(
-    caches.match(e.request).then(response => {
-      if (response) {
-        return response
-      }
+// self.addEventListener('fetch', e => {
+//   e.respondWith(
+//     caches.match(e.request).then(response => {
+//       if (response) {
+//         return response
+//       }
 
-      const fetchRequest = e.request.clone()
+//       const fetchRequest = e.request.clone()
 
-      return fetch(fetchRequest).then(response => {
-        // Check if we received a valid response
-        if (!response || response.status !== 200) {
-          return response
-        }
+//       return fetch(fetchRequest).then(response => {
+//         // Check if we received a valid response
+//         if (!response || response.status !== 200) {
+//           return response
+//         }
 
-        const responseToCache = response.clone()
+//         const responseToCache = response.clone()
 
-        caches.open(DATA_CACHE_NAME).then(cache => {
-          cache.put(e.request, responseToCache)
-        })
+//         caches.open(DATA_CACHE_NAME).then(cache => {
+//           cache.put(e.request, responseToCache)
+//         })
 
-        return response
-      })
-    })
-  )
-})
+//         return response
+//       })
+//     })
+//   )
+// })
 
