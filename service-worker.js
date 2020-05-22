@@ -1,7 +1,7 @@
 var cacheName = 'cache-v1';
 var data_Cache_Name = 'data-cache-v1';
 
-var preCache = ['/index.html', '/styles.css', '/script.js', '/images/icons.png'];
+var preCache = ['./index.html', './styles.css', './script.js', './images/icons.png'];
 
 //On install - as a dependency
 self.addEventListener('install', e => {

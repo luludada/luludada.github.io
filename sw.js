@@ -5,10 +5,10 @@ self.addEventListener('install', (event) => {
     const cache = await caches.open('mysite-static-v1');
     console.log("Opened cache");
     await cache.addAll([
-      '/index.html', 
-      '/styles.css', 
-      '/script.js', 
-      '/images/icons.png'
+      './index.html', 
+      './styles.css', 
+      './script.js', 
+      './images/icons.png'
     ]);
   }());
 });
