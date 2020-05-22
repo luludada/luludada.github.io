@@ -5,12 +5,11 @@ const PRE_CACHE = ['/index.html', '/styles.css', '/script.js', 'images/icons.png
 
 
 //On install - as a dependency
-self.addEventListener('install', (event) => {
-  event.waitUntil(async function() {
+self.addEventListener('install', e => {
+  e.waitUntil(async function() {
     const cache = await caches.open(CACHE_NAME);
     await cache.addAll([PRE_CACHE]);
   }());
-});
 });
 
 //Clean-up & migration.
