@@ -1,10 +1,10 @@
 var cacheName = 'mysite-static-v1';
 var preCache = ['./index.html', './styles.css', './script.js', './images/icons.png'];
-importScripts('/cache-polyfill.js');
+importScripts('./cache-polyfill.js');
 
 
 self.addEventListener('install', function(e){
-  console.log('SW install:', e);
+  console.log('Service Worker install:', e);
   e.waitUntil(
     caches.open(cacheName)
     .then(function(cache){
