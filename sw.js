@@ -1,40 +1,49 @@
-const cacheName = 'mysite-static-v1';
+var cacheName = 'mysite-static-v1';
+var preCache = ['./index.html', './styles.css', './script.js', './images/icons.png'];
+importScripts('/cache-polyfill.js');
 
-self.addEventListener('install', (event) => {
-  event.waitUntil(async function() {
-    const cache = await caches.open('mysite-static-v1');
-    console.log("Opened cache");
-    await cache.addAll([
-      './index.html', 
-      './styles.css', 
-      './script.js', 
-      './images/icons.png'
-    ]);
-  }());
+
+self.addEventListener('install', function(e){
+  console.log('SW install:', e);
+  e.waitUntil(
+    caches.open(cacheName)
+    .then(function(cache){
+      console.log('Opened cache: ', cache);
+      return cache.addAll(preCache);
+    })
+    .then(function(cache){
+      console.log('Cache completed');
+    })
+  )
 });
 
-self.addEventListener('activate', (event) => {
-  event.waitUntil(async function() {
-    const cacheNames = await caches.keys();
-    await Promise.all(
-      cacheNames.filter((cacheName) => {
-        // Return true if you want to remove this cache,
-        // but remember that caches are shared across
-        // the whole origin
-      }).map(cacheName => caches.delete(cacheName))
-    );
-  }());
+
+self.addEventListener('activate', event => {
+  console.log('Activating new service worker...');
+
+  const cacheWhitelist = [cacheName];
+
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          if (cacheWhitelist.indexOf(cacheName) === -1) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
 });
 
-self.addEventListener('fetch', (event) => {
-  event.respondWith(async function() {
-    const cache = await caches.open('mysite-dynamic');
-    const cachedResponse = await cache.match(event.request);
-    if (cachedResponse) return cachedResponse;
-    const networkResponse = await fetch(event.request);
-    event.waitUntil(
-      cache.put(event.request, networkResponse.clone())
-    );
-    return networkResponse;
-  }());
-});
+
+self.addEventListener('fetch', function(event) {
+  console.log(event.request.url);
+ 
+  event.respondWith(
+    caches.match(event.request).then(function(response) {
+      return response || fetch(event.request);
+    })
+  );
+ });
+
