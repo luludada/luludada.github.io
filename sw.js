@@ -1,27 +1,40 @@
-importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
+const cacheName = 'mysite-static-v1';
 
-workbox.routing.registerRoute(
-    /\.(?:css|js)$/,
-    new workbox.strategies.StaleWhileRevalidate({
-        "cacheName": "assets",
-        plugins: [
-            new workbox.expiration.Plugin({
-                maxEntries: 1000,
-                maxAgeSeconds: 31536000
-            })
-        ]
-    })
-);
+self.addEventListener('install', (event) => {
+  event.waitUntil(async function() {
+    const cache = await caches.open('mysite-static-v1');
+    console.log("Opened cache");
+    await cache.addAll([
+      '/index.html', 
+      '/styles.css', 
+      '/script.js', 
+      'images/icons.png'
+    ]);
+  }());
+});
 
-workbox.routing.registerRoute(
-    /\.(?:png|jpg|jpeg|gif|bmp|webp|svg|ico)$/,
-    new workbox.strategies.CacheFirst({
-        "cacheName": "images",
-        plugins: [
-            new workbox.expiration.Plugin({
-                maxEntries: 1000,
-                maxAgeSeconds: 31536000
-            })
-        ]
-    })
-);
+self.addEventListener('activate', (event) => {
+  event.waitUntil(async function() {
+    const cacheNames = await caches.keys();
+    await Promise.all(
+      cacheNames.filter((cacheName) => {
+        // Return true if you want to remove this cache,
+        // but remember that caches are shared across
+        // the whole origin
+      }).map(cacheName => caches.delete(cacheName))
+    );
+  }());
+});
+
+self.addEventListener('fetch', (event) => {
+  event.respondWith(async function() {
+    const cache = await caches.open('mysite-dynamic');
+    const cachedResponse = await cache.match(event.request);
+    if (cachedResponse) return cachedResponse;
+    const networkResponse = await fetch(event.request);
+    event.waitUntil(
+      cache.put(event.request, networkResponse.clone())
+    );
+    return networkResponse;
+  }());
+});
