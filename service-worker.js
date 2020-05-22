@@ -1,15 +1,20 @@
 const CACHE_NAME = 'cache-v1'
 const DATA_CACHE_NAME = 'data-cache-v1'
 
-const PRE_CACHE = ['/index.html', '/styles.css', '/script.js', 'images/icons.png']
-
-
 //On install - as a dependency
-self.addEventListener('install', e => {
-  e.waitUntil(async function() {
-    const cache = await caches.open(CACHE_NAME);
-    await cache.addAll([PRE_CACHE]);
-  }());
+self.addEventListener('install', function(event) {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(function(cache) {
+      return cache.addAll(
+        [
+          '/index.html',
+          '/styles.css',
+          '/script.js', 
+          'images/icons.png'
+        ]
+      );
+    })
+  );
 });
 
 //Clean-up & migration.
