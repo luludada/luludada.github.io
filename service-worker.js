@@ -1,48 +1,50 @@
-const version = "v1";
-const cacheName = `cache-${version}`;
 self.addEventListener('install', e => {
   e.waitUntil(
-    caches.open(cacheName).then(cache => {
+    caches.open('cache-v1').then(cache => {
       return cache.addAll([
         `/index.html`, 
         `/styles.css`, 
         `/scripts.js`, 
         `/images/icons.png`
       ])
-          .then(() => self.skipWaiting());
-    })
-  );
-});
-
-self.addEventListener('activate', event => {
-  event.waitUntil(self.clients.claim());
-});
-
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.open(cacheName)
-      .then(cache => cache.match(event.request, {ignoreSearch: true}))
-      .then(response => {
-      return response || fetch(event.request);
+        .then(() => self.skipWaiting());
     })
   );
 });
 
 //Clean-up & migration.
-// self.addEventListener('activate', e => {
-//   e.waitUntil(
-//     caches.keys().then(keyList => {
-//       return Promise.all(
-//         keyList.map(key => {
-//           if (key !== cacheName && key !== data_Cache_Name) {
-//             console.log('[ServiceWorker] Removing old cache', key);
-//             return caches.delete(key)
-//           }
-//         })
-//       )
-//     })
-//   )
-// })
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(async function() {
+    const cacheNames = await caches.keys();
+    console.log('Activating new service worker...');
+    await Promise.all(
+      cacheNames.filter((cacheName) => {
+        // Return true if you want to remove this cache,
+        // but remember that caches are shared across
+        // the whole origin
+      }).map(cacheName => caches.delete(cacheName))
+    );
+  }());
+});
+
+self.addEventListener('fetch', (event) => {
+  event.respondWith(async function() {
+    const cache = await caches.open('mysite-dynamic');
+    const cachedResponse = await cache.match(event.request);
+    const networkResponsePromise = fetch(event.request);
+
+    event.waitUntil(async function() {
+      const networkResponse = await networkResponsePromise;
+      await cache.put(event.request, networkResponse.clone());
+    }());
+
+    // Returned the cached response if we have one, otherwise return the network response.
+    return cachedResponse || networkResponsePromise;
+  }());
+});
+
+
 
 
 // self.addEventListener('fetch', event => {
