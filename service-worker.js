@@ -6,7 +6,7 @@ self.addEventListener('install', e => {
         `/styles.css`, 
         `/scripts.js`, 
         `/images/icons.png`,
-        `/images/icons-512.png`
+        `images/horse.svg`
       ])
         .then(() => self.skipWaiting());
     })
@@ -34,6 +34,7 @@ self.addEventListener('fetch', (event) => {
     const cache = await caches.open('mysite-dynamic');
     const cachedResponse = await cache.match(event.request);
     const networkResponsePromise = fetch(event.request);
+    console.log('Service Worker is fetching now');
 
     event.waitUntil(async function() {
       const networkResponse = await networkResponsePromise;
