@@ -6,7 +6,7 @@ self.addEventListener('install', e => {
       return cache.addAll([
         `/index.html`, 
         `/styles.css`, 
-        `/script.js`, 
+        `/scripts.js`, 
         `/images/icons.png`
       ])
           .then(() => self.skipWaiting());

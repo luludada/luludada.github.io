@@ -1,5 +1,5 @@
 const cacheName = "mysite-static-v1";
-const preCache = ['./index.html', './styles.css', './script.js', './images/icons.png'];
+const preCache = ['./index.html', './styles.css', './scripts.js', './images/icons.png'];
 
 self.addEventListener('install', function(e){
   console.log('Service Worker install:', e);
