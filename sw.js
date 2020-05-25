@@ -1,7 +1,5 @@
-var cacheName = 'mysite-static-v1';
-var preCache = ['./index.html', './styles.css', './script.js', './images/icons.png'];
-importScripts('./cache-polyfill.js');
-
+const cacheName = "mysite-static-v1";
+const preCache = ['./index.html', './styles.css', './script.js', './images/icons.png'];
 
 self.addEventListener('install', function(e){
   console.log('Service Worker install:', e);
