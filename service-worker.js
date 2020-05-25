@@ -6,7 +6,7 @@ var preCache = ['./index.html', './styles.css', './script.js', './images/icons.p
 //On install - as a dependency
 self.addEventListener('install', e => {
   e.waitUntil(
-    caches.open('cache-v1').then(cache => {
+    caches.open(cacheName).then(cache => {
         console.log('Opened cache');
         return cache.addAll(preCache);
     }).then(() => {
@@ -15,33 +15,47 @@ self.addEventListener('install', e => {
   );
 });
 
-
-
-//Clean-up & migration.
-self.addEventListener('activate', e => {
-  e.waitUntil(
-    caches.keys().then(keyList => {
-      return Promise.all(
-        keyList.map(key => {
-          if (key !== cacheName && key !== data_Cache_Name) {
-            console.log('[ServiceWorker] Removing old cache', key);
-            return caches.delete(key)
-          }
-        })
-      )
-    })
-  )
-})
-
+self.addEventListener('activate', event => {
+  event.waitUntil(self.clients.claim());
+});
 
 self.addEventListener('fetch', event => {
-  event.respondWith( 
-    caches.match(event.request)
-     .then(response => {
-       return response || fetch(event.request);
+  event.respondWith(
+    caches.open(cacheName)
+      .then(cache => cache.match(event.request, {ignoreSearch: true}))
+      .then(response => {
+      return response || fetch(event.request);
     })
   );
 });
+
+
+
+//Clean-up & migration.
+// self.addEventListener('activate', e => {
+//   e.waitUntil(
+//     caches.keys().then(keyList => {
+//       return Promise.all(
+//         keyList.map(key => {
+//           if (key !== cacheName && key !== data_Cache_Name) {
+//             console.log('[ServiceWorker] Removing old cache', key);
+//             return caches.delete(key)
+//           }
+//         })
+//       )
+//     })
+//   )
+// })
+
+
+// self.addEventListener('fetch', event => {
+//   event.respondWith( 
+//     caches.match(event.request)
+//      .then(response => {
+//        return response || fetch(event.request);
+//     })
+//   );
+// });
 
 // self.addEventListener('fetch', (event) => {
 //   event.respondWith(async function() {
