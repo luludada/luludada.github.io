@@ -1,5 +1,5 @@
-var cacheName = 'cache-v1';
-var data_Cache_Name = 'data-cache-v1';
+const cacheName = "cache-v1";
+const data_Cache_Name = 'data-cache-v1';
 
 var preCache = ['./index.html', './styles.css', './script.js', './images/icons.png'];
 
@@ -8,9 +8,13 @@ self.addEventListener('install', e => {
   e.waitUntil(
     caches.open(cacheName).then(cache => {
         console.log('Opened cache');
-        return cache.addAll(preCache);
-    }).then(() => {
-      return self.skipWaiting();
+        return cache.addAll([
+          './index.html', 
+          './styles.css', 
+          './script.js', 
+          './images/icons.png'
+        ])
+        .then(() => self.skipWaiting());
     })
   );
 });
