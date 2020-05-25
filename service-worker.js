@@ -5,7 +5,8 @@ self.addEventListener('install', e => {
         `/index.html`, 
         `/styles.css`, 
         `/scripts.js`, 
-        `/images/icons.png`
+        `/images/icons.png`,
+        `/images/icons-512.png`
       ])
         .then(() => self.skipWaiting());
     })
