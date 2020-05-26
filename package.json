@@ -4,7 +4,9 @@
   "description": "",
   "main": "scripts.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npm run build && node server.js",
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
@@ -18,10 +20,16 @@
   },
   "homepage": "https://github.com/luludada/luludada.github.io#readme",
   "devDependencies": {
-    "workbox-build": "^5.1.3"
+    "css-loader": "^3.5.3",
+    "file-loader": "^6.0.0",
+    "html-webpack-plugin": "^4.3.0",
+    "mini-css-extract-plugin": "^0.9.0",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11",
+    "workbox-build": "^5.1.3",
+    "workbox-webpack-plugin": "^5.1.3"
+  },
+  "dependencies": {
+    "webpack-clean-plugin": "^0.2.3"
   }
 }
-
-
-
-

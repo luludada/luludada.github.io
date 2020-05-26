@@ -1,30 +1,13 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <link rel="stylesheet" href="styles.css" />
-    </head>
-    <body>
-        <div>
-            <h1>Hello World!</h1>
-            <h2>Hello WorkBox</h2>
-            <img src="images/icons.png" alt="Luludada Test Icon">
-            <img src="images/horse.svg" alt = "horse">
-        </div>
-        <script src="scripts.js"></script>
-        <script>
-            if ('serviceWorker' in navigator) {
-              navigator.serviceWorker
-                .register('/service-worker.js')
-                .then(registration => {
-                  console.log(
-                    'ServiceWorker registration successful with scope: ',
-                    registration.scope
-                  )
-                })
-                .catch(err => {
-                  console.log('ServiceWorker registration failed: ', err)
-                })
-            }
-      </script>
-    </body>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Workbox using with webpack</title>
+</head>
+<body>
+  <h1>Workbox using with webpack</h1>
+  <div id="main"></div>
+</body>
 </html>
